@@ -13,6 +13,7 @@ diffusers==0.25.0
 accelerate==0.26.1
 sentencepiece==0.1.99
 protobuf==4.25.2
+bitsandbytes==0.41.3  # For 8bit/4bit quantization
 
 # Image Processing
 Pillow==10.2.0

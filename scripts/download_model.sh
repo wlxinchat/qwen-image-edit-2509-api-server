@@ -52,7 +52,7 @@ fi
 echo -e "${YELLOW}Downloading model...${NC}"
 python3 << EOF
 import os
-from transformers import AutoModel, AutoProcessor
+from transformers import AutoModelForCausalLM, AutoProcessor
 
 # Set cache directories
 os.environ['HF_HOME'] = '$HF_HOME'
@@ -79,7 +79,7 @@ try:
 
     # Download model
     print("\nDownloading model...")
-    model = AutoModel.from_pretrained(
+    model = AutoModelForCausalLM.from_pretrained(
         model_name,
         cache_dir=cache_dir,
         trust_remote_code=True,

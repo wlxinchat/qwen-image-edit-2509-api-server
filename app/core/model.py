@@ -75,8 +75,9 @@ class QwenImageEditModel:
                 **model_kwargs
             )
 
-            # Move to device if not using device_map
-            if self.device != "cuda" or not model_kwargs.get("device_map"):
+            # Move to device if not using device_map="auto"
+            # When device_map="auto", model is already distributed, don't move
+            if not (self.device == "cuda" and model_kwargs.get("device_map") == "auto"):
                 self.model = self.model.to(self.device)
 
             # Set to evaluation mode
