@@ -256,9 +256,10 @@ install_dependencies() {
     print_step "[5/10] 安装Python依赖"
 
     print_info "Upgrading pip..."
-    if ! retry_command "python3 -m pip install --upgrade pip" "Upgrade pip"; then
-        print_error "Failed to upgrade pip"
-        return 1
+    if ! retry_command "python3 -m pip install --upgrade pip --ignore-installed" "Upgrade pip"; then
+        print_warning "Failed to upgrade pip, but continuing (current version should work)"
+        print_info "Current pip version:"
+        pip3 --version | tee -a "$LOG_FILE"
     fi
 
     print_info "Installing dependencies (this may take 5-10 minutes)..."
