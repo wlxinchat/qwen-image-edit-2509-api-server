@@ -60,7 +60,7 @@ echo -e "${YELLOW}Downloading model using Diffusers pipeline...${NC}"
 python3 << EOF
 import os
 import torch
-from diffusers import QwenImageEditPlusPipeline
+from diffusers import QwenImageEditPipeline
 
 # Set cache directories
 os.environ['HF_HOME'] = '$HF_HOME'
@@ -80,7 +80,7 @@ try:
     print("\nDownloading Qwen-Image-Edit-2509 pipeline...")
     print("This will download all required components (model, scheduler, etc.)")
 
-    pipeline = QwenImageEditPlusPipeline.from_pretrained(
+    pipeline = QwenImageEditPipeline.from_pretrained(
         model_name,
         torch_dtype=torch.bfloat16,
         cache_dir=cache_dir,
@@ -97,8 +97,8 @@ try:
     print("Download completed successfully!")
     print("="*50)
     print("\nThe model can now be loaded using:")
-    print("  from diffusers import QwenImageEditPlusPipeline")
-    print("  pipeline = QwenImageEditPlusPipeline.from_pretrained(...)")
+    print("  from diffusers import QwenImageEditPipeline")
+    print("  pipeline = QwenImageEditPipeline.from_pretrained(...)")
 
 except Exception as e:
     print(f"\n✗ Error during download: {e}")

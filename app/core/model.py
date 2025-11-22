@@ -40,11 +40,11 @@ class QwenImageEditModel:
             logger.info(f"Dtype: {config.model.dtype}")
 
             # Import Diffusers pipeline
-            from diffusers import QwenImageEditPlusPipeline
+            from diffusers import QwenImageEditPipeline
 
             # Load the pipeline
-            logger.info("Loading QwenImageEditPlusPipeline...")
-            self.pipeline = QwenImageEditPlusPipeline.from_pretrained(
+            logger.info("Loading QwenImageEditPipeline...")
+            self.pipeline = QwenImageEditPipeline.from_pretrained(
                 config.model.name,
                 torch_dtype=self.dtype,
                 cache_dir=config.model.cache_dir,
