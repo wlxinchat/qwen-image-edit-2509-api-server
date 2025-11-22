@@ -22,7 +22,7 @@ class ServerConfig(BaseSettings):
 class ModelConfig(BaseSettings):
     """Model configuration."""
 
-    name: str = Field(default="Qwen/qwen-image-edit-2509")
+    name: str = Field(default="Qwen/Qwen-Image-Edit-2509")
     cache_dir: str = Field(default="/root/autodl-tmp/models")
     device: str = Field(default="cuda")
     dtype: str = Field(default="bf16")

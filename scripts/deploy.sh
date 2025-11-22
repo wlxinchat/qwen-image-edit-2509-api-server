@@ -312,8 +312,8 @@ download_model() {
     print_step "[7/10] 下载模型"
 
     # 检查模型是否已存在
-    local model_name=$(grep "MODEL_NAME=" .env 2>/dev/null | cut -d= -f2 || echo "Qwen/qwen-image-edit-2509")
-    model_name=${model_name:-"Qwen/qwen-image-edit-2509"}
+    local model_name=$(grep "MODEL_NAME=" .env 2>/dev/null | cut -d= -f2 || echo "Qwen/Qwen-Image-Edit-2509")
+    model_name=${model_name:-"Qwen/Qwen-Image-Edit-2509"}
 
     # 简单检查：如果models目录有内容，询问是否跳过
     if [ -d "$MODELS_DIR" ] && [ "$(ls -A $MODELS_DIR 2>/dev/null)" ]; then
