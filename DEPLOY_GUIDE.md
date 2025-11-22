@@ -2,6 +2,45 @@
 
 本指南专门针对AutoDL平台RTX 5090 GPU环境的详细部署步骤。
 
+## ⚡ 快速开始（推荐）
+
+### 一键部署
+
+最简单的部署方式，适合大多数用户：
+
+```bash
+cd /root
+git clone https://github.com/wlxinchat/qwen-image-edit-2509-api-server.git
+cd qwen-image-edit-2509-api-server
+bash scripts/deploy.sh
+```
+
+该脚本会自动完成：
+- ✅ 检查Python环境和版本
+- ✅ 检查磁盘空间（系统盘和数据盘）
+- ✅ 检查GPU可用性
+- ✅ 配置数据盘缓存路径
+- ✅ 安装所有Python依赖
+- ✅ 验证依赖安装
+- ✅ 下载模型到数据盘
+- ✅ 检查端口可用性
+- ✅ 启动API服务
+- ✅ 验证服务正常运行
+
+**部署时间**: 约15-30分钟（取决于网络速度）
+
+部署完成后，你会看到类似如下的摘要信息：
+```
+✓ 部署成功！
+
+服务信息:
+  • API地址: http://localhost:8000
+  • API文档: http://localhost:8000/docs
+  • 健康检查: http://localhost:8000/health
+```
+
+---
+
 ## 📋 前置准备
 
 ### 1. AutoDL实例配置推荐
@@ -19,13 +58,17 @@
 ssh root@your-instance-ip -p your-port
 ```
 
-## 🚀 部署步骤
+---
+
+## 🚀 手动部署（高级用户）
+
+如果你想要更多控制，可以按以下步骤手动部署：
 
 ### 步骤 1: 克隆项目
 
 ```bash
 cd /root
-git clone <your-repo-url> qwen-image-edit-2509-api-server
+git clone https://github.com/wlxinchat/qwen-image-edit-2509-api-server.git
 cd qwen-image-edit-2509-api-server
 ```
 
@@ -37,7 +80,13 @@ df -h
 
 确认 `/root/autodl-tmp` 有足够的空间（至少30GB）。
 
-### 步骤 3: 运行自动设置脚本
+### 步骤 3: 运行环境检查（可选）
+
+```bash
+python3 scripts/check_env.py
+```
+
+### 步骤 4: 运行自动设置脚本
 
 ```bash
 bash scripts/setup_autodl.sh

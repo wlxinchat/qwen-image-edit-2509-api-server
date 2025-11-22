@@ -2,6 +2,8 @@
 
 基于Qwen-VL模型的图片编辑API服务，专为AutoDL环境优化，特别解决了系统盘空间不足的问题。
 
+📖 **快速链接**: [快速开始](QUICKSTART.md) | [详细部署指南](DEPLOY_GUIDE.md) | [API文档](http://localhost:8000/docs)
+
 ## ✨ 特性
 
 - 🚀 基于FastAPI的高性能API服务
@@ -21,19 +23,36 @@
 
 ## 🚀 快速开始
 
-### 1. AutoDL环境设置
+### 一键部署（推荐）
 
-在AutoDL上克隆项目：
+在AutoDL上直接运行一键部署脚本：
 
 ```bash
 cd /root
-git clone <your-repo-url> qwen-image-edit-2509-api-server
+git clone https://github.com/wlxinchat/qwen-image-edit-2509-api-server.git
+cd qwen-image-edit-2509-api-server
+bash scripts/deploy.sh
+```
+
+该脚本会自动完成：
+- ✅ 环境检查（Python、磁盘空间、依赖）
+- ✅ 自动配置数据盘缓存
+- ✅ 安装所有依赖
+- ✅ 下载模型
+- ✅ 启动服务
+- ✅ 验证服务可用性
+
+### 手动部署（高级用户）
+
+#### 1. 克隆项目
+
+```bash
+cd /root
+git clone https://github.com/wlxinchat/qwen-image-edit-2509-api-server.git
 cd qwen-image-edit-2509-api-server
 ```
 
-### 2. 运行设置脚本
-
-这个脚本会自动配置环境，将所有缓存和模型文件重定向到数据盘：
+#### 2. 运行设置脚本
 
 ```bash
 bash scripts/setup_autodl.sh
@@ -46,31 +65,24 @@ bash scripts/setup_autodl.sh
 - ✅ 配置PyTorch缓存到数据盘
 - ✅ 安装Python依赖
 
-### 3. 配置环境
-
-编辑 `.env` 文件来自定义配置：
+#### 3. 配置环境（可选）
 
 ```bash
-vim .env
+cp .env.example .env
+vim .env  # 根据需要修改
 ```
 
-或者编辑 `config.yaml` 进行更详细的配置。
-
-### 4. 下载模型
+#### 4. 下载模型
 
 ```bash
 bash scripts/download_model.sh
 ```
 
-模型会被下载到 `/root/autodl-tmp/models`，不会占用系统盘空间。
-
-### 5. 启动服务
+#### 5. 启动服务
 
 ```bash
 bash scripts/start_server.sh
 ```
-
-服务默认运行在 `http://0.0.0.0:8000`
 
 ## 📖 API 使用
 
