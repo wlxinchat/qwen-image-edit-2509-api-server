@@ -1,4 +1,4 @@
-"""Model loading and inference."""
+"""Model loading and inference using Qwen-Image-Edit-2509 Diffusers Pipeline."""
 
 import torch
 from loguru import logger
@@ -10,11 +10,10 @@ from app.core.config import config
 
 
 class QwenImageEditModel:
-    """Qwen Image Edit model wrapper."""
+    """Qwen Image Edit model wrapper using Diffusers Pipeline."""
 
     def __init__(self):
-        self.model = None
-        self.processor = None
+        self.pipeline = None
         self.device = config.model.device
         self.dtype = self._get_dtype()
         self.loaded = False
@@ -29,166 +28,148 @@ class QwenImageEditModel:
         return dtype_map.get(config.model.dtype, torch.bfloat16)
 
     def load_model(self):
-        """Load the model and processor."""
+        """Load the Qwen Image Edit pipeline."""
         if self.loaded:
             logger.info("Model already loaded")
             return
 
         try:
-            logger.info(f"Loading model: {config.model.name}")
+            logger.info(f"Loading Qwen-Image-Edit-2509 pipeline: {config.model.name}")
             logger.info(f"Cache directory: {config.model.cache_dir}")
             logger.info(f"Device: {self.device}")
             logger.info(f"Dtype: {config.model.dtype}")
 
-            # Import required libraries
-            from transformers import AutoModelForCausalLM, AutoTokenizer
+            # Import Diffusers pipeline
+            from diffusers import QwenImageEditPlusPipeline
 
-            # Load tokenizer (Qwen models use AutoTokenizer instead of AutoProcessor)
-            logger.info("Loading tokenizer...")
-            self.processor = AutoTokenizer.from_pretrained(
+            # Load the pipeline
+            logger.info("Loading QwenImageEditPlusPipeline...")
+            self.pipeline = QwenImageEditPlusPipeline.from_pretrained(
                 config.model.name,
+                torch_dtype=self.dtype,
                 cache_dir=config.model.cache_dir,
-                trust_remote_code=True,
             )
+            logger.info("Pipeline loaded successfully")
 
-            # Prepare model loading kwargs
-            model_kwargs = {
-                "cache_dir": config.model.cache_dir,
-                "trust_remote_code": True,
-                "device_map": "auto" if self.device == "cuda" else None,
-            }
+            # Move to device
+            self.pipeline.to(self.device)
+            logger.info(f"Pipeline moved to {self.device}")
 
-            # Add quantization settings if enabled
-            if config.model.load_in_8bit:
-                logger.info("Using 8-bit quantization")
-                model_kwargs["load_in_8bit"] = True
-            elif config.model.load_in_4bit:
-                logger.info("Using 4-bit quantization")
-                model_kwargs["load_in_4bit"] = True
-            else:
-                model_kwargs["torch_dtype"] = self.dtype
-
-            # Load model
-            logger.info("Loading model...")
-            self.model = AutoModelForCausalLM.from_pretrained(
-                config.model.name,
-                **model_kwargs
-            )
-
-            # Move to device if not using device_map="auto"
-            # When device_map="auto", model is already distributed, don't move
-            if not (self.device == "cuda" and model_kwargs.get("device_map") == "auto"):
-                self.model = self.model.to(self.device)
-
-            # Set to evaluation mode
-            self.model.eval()
-
-            # Optional: compile model for better performance
-            if config.performance.compile_model and hasattr(torch, "compile"):
-                logger.info("Compiling model for better performance...")
-                self.model = torch.compile(self.model)
+            # Configure progress bar
+            self.pipeline.set_progress_bar_config(disable=None)
 
             self.loaded = True
-            logger.info("Model loaded successfully")
+            logger.info("Qwen-Image-Edit-2509 pipeline loaded and ready")
 
         except Exception as e:
-            logger.error(f"Failed to load model: {e}")
+            logger.error(f"Failed to load pipeline: {e}")
             raise
 
     def unload_model(self):
-        """Unload the model to free memory."""
+        """Unload the pipeline to free memory."""
         if self.loaded:
-            del self.model
-            del self.processor
-            self.model = None
-            self.processor = None
+            del self.pipeline
+            self.pipeline = None
             self.loaded = False
 
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
 
-            logger.info("Model unloaded")
+            logger.info("Pipeline unloaded")
 
-    @torch.no_grad()
+    @torch.inference_mode()
     def edit_image(
         self,
-        image: Union[str, Path, Image.Image],
+        image: Union[str, Path, Image.Image, List[Union[str, Path, Image.Image]]],
         prompt: str,
+        negative_prompt: str = " ",
+        num_inference_steps: int = 40,
+        guidance_scale: float = 1.0,
+        true_cfg_scale: float = 4.0,
+        seed: Optional[int] = None,
         **kwargs
     ) -> Image.Image:
         """
-        Edit an image based on the prompt.
+        Edit an image (or multiple images) based on the prompt using Qwen-Image-Edit-2509.
 
         Args:
-            image: Input image (path or PIL Image)
-            prompt: Editing instruction
+            image: Input image(s) - single image or list of 1-3 images (path or PIL Image)
+            prompt: Editing instruction/prompt
+            negative_prompt: Negative prompt (default: " ")
+            num_inference_steps: Number of denoising steps (default: 40)
+            guidance_scale: Guidance scale (default: 1.0)
+            true_cfg_scale: True CFG scale (default: 4.0)
+            seed: Random seed for reproducibility (optional)
             **kwargs: Additional generation parameters
 
         Returns:
             Edited image as PIL Image
         """
         if not self.loaded:
-            raise RuntimeError("Model not loaded. Call load_model() first.")
+            raise RuntimeError("Pipeline not loaded. Call load_model() first.")
 
         try:
-            # Load image if path is provided
-            if isinstance(image, (str, Path)):
-                image = Image.open(image).convert("RGB")
+            # Handle image input - convert to list if single image
+            if not isinstance(image, list):
+                images = [image]
+            else:
+                images = image
 
-            # Prepare inputs
-            # Note: Actual implementation depends on the specific model API
-            # This is a template that needs to be adapted to the real model
+            # Load images if paths are provided
+            loaded_images = []
+            for img in images:
+                if isinstance(img, (str, Path)):
+                    loaded_images.append(Image.open(img).convert("RGB"))
+                else:
+                    loaded_images.append(img)
 
-            # Example implementation (adjust based on actual model):
-            messages = [
-                {
-                    "role": "user",
-                    "content": [
-                        {"type": "image", "image": image},
-                        {"type": "text", "text": prompt},
-                    ],
-                }
-            ]
+            # Limit to 1-3 images as per model documentation
+            if len(loaded_images) > 3:
+                logger.warning(f"More than 3 images provided ({len(loaded_images)}), using first 3")
+                loaded_images = loaded_images[:3]
 
-            # Process inputs
-            text = self.processor.apply_chat_template(
-                messages, tokenize=False, add_generation_prompt=True
-            )
+            logger.info(f"Editing {len(loaded_images)} image(s) with prompt: {prompt}")
 
-            inputs = self.processor(
-                text=[text],
-                images=[image],
-                return_tensors="pt",
-            ).to(self.device)
+            # Prepare pipeline inputs
+            generator = None
+            if seed is not None:
+                generator = torch.Generator(device=self.device).manual_seed(seed)
 
-            # Generate
-            generation_kwargs = {
-                "max_new_tokens": kwargs.get("max_new_tokens", 512),
-                "do_sample": kwargs.get("do_sample", False),
+            inputs = {
+                "image": loaded_images,
+                "prompt": prompt,
+                "negative_prompt": negative_prompt,
+                "num_inference_steps": num_inference_steps,
+                "guidance_scale": guidance_scale,
+                "true_cfg_scale": true_cfg_scale,
+                "generator": generator,
+                "num_images_per_prompt": kwargs.get("num_images_per_prompt", 1),
             }
 
-            outputs = self.model.generate(**inputs, **generation_kwargs)
+            # Add any additional kwargs
+            for key, value in kwargs.items():
+                if key not in inputs:
+                    inputs[key] = value
 
-            # Decode output
-            generated_text = self.processor.batch_decode(
-                outputs, skip_special_tokens=True
-            )[0]
+            # Run the pipeline
+            logger.info("Running image editing pipeline...")
+            output = self.pipeline(**inputs)
 
-            logger.info(f"Generated text: {generated_text}")
+            # Get the first output image
+            edited_image = output.images[0]
+            logger.info("Image editing completed successfully")
 
-            # Note: For image editing models, you may need different processing
-            # This is a placeholder - adapt to your specific model's API
-
-            return image  # Replace with actual edited image
+            return edited_image
 
         except Exception as e:
             logger.error(f"Error during image editing: {e}")
             raise
 
     def get_model_info(self) -> dict:
-        """Get information about the loaded model."""
+        """Get information about the loaded pipeline."""
         info = {
             "model_name": config.model.name,
+            "model_type": "Qwen-Image-Edit-2509 (Diffusers Pipeline)",
             "loaded": self.loaded,
             "device": self.device,
             "dtype": str(self.dtype),

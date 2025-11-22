@@ -56,10 +56,11 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 # Create download script
-echo -e "${YELLOW}Downloading model...${NC}"
+echo -e "${YELLOW}Downloading model using Diffusers pipeline...${NC}"
 python3 << EOF
 import os
-from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+from diffusers import QwenImageEditPlusPipeline
 
 # Set cache directories
 os.environ['HF_HOME'] = '$HF_HOME'
@@ -72,31 +73,32 @@ token = '$HF_TOKEN' if '$HF_TOKEN' else None
 
 print(f"Downloading {model_name}...")
 print(f"Cache directory: {cache_dir}")
+print("Model type: Qwen-Image-Edit-2509 (Diffusers Pipeline)")
 
 try:
-    # Download tokenizer (Qwen uses AutoTokenizer instead of AutoProcessor)
-    print("\nDownloading tokenizer...")
-    tokenizer = AutoTokenizer.from_pretrained(
-        model_name,
-        cache_dir=cache_dir,
-        trust_remote_code=True,
-        token=token
-    )
-    print("✓ Tokenizer downloaded")
+    # Download the full pipeline
+    print("\nDownloading Qwen-Image-Edit-2509 pipeline...")
+    print("This will download all required components (model, scheduler, etc.)")
 
-    # Download model
-    print("\nDownloading model...")
-    model = AutoModelForCausalLM.from_pretrained(
+    pipeline = QwenImageEditPlusPipeline.from_pretrained(
         model_name,
+        torch_dtype=torch.bfloat16,
         cache_dir=cache_dir,
-        trust_remote_code=True,
-        token=token
+        token=token,
     )
-    print("✓ Model downloaded")
+    print("✓ Pipeline downloaded successfully")
+
+    # Test that it can be moved to CPU (just to verify)
+    print("\nVerifying pipeline...")
+    pipeline.to('cpu')
+    print("✓ Pipeline verified")
 
     print("\n" + "="*50)
     print("Download completed successfully!")
     print("="*50)
+    print("\nThe model can now be loaded using:")
+    print("  from diffusers import QwenImageEditPlusPipeline")
+    print("  pipeline = QwenImageEditPlusPipeline.from_pretrained(...)")
 
 except Exception as e:
     print(f"\n✗ Error during download: {e}")
