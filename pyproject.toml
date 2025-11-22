@@ -1,0 +1,95 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qwen-image-edit-2509-api-server"
+version = "0.1.0"
+description = "API server for Qwen Image Edit 2509 model, optimized for AutoDL RTX 5090"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "wlxinchat", email = "wlxinchat@gmail.com"}
+]
+maintainers = [
+    {name = "wlxinchat", email = "wlxinchat@gmail.com"}
+]
+keywords = [
+    "qwen",
+    "image-editing",
+    "api-server",
+    "fastapi",
+    "autodl",
+    "pytorch",
+    "transformers"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "fastapi==0.109.0",
+    "uvicorn[standard]==0.27.0",
+    "python-multipart==0.0.6",
+    "pydantic==2.5.3",
+    "pydantic-settings==2.1.0",
+    "torch==2.1.2",
+    "torchvision==0.16.2",
+    "transformers==4.37.0",
+    "diffusers==0.25.0",
+    "accelerate==0.26.1",
+    "sentencepiece==0.1.99",
+    "protobuf==4.25.2",
+    "bitsandbytes==0.41.3",
+    "Pillow==10.2.0",
+    "opencv-python==4.9.0.80",
+    "numpy==1.26.3",
+    "pyyaml==6.0.1",
+    "python-dotenv==1.0.0",
+    "loguru==0.7.2",
+    "httpx==0.26.0",
+    "prometheus-client==0.19.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/wlxinchat/qwen-image-edit-2509-api-server"
+Repository = "https://github.com/wlxinchat/qwen-image-edit-2509-api-server"
+Issues = "https://github.com/wlxinchat/qwen-image-edit-2509-api-server/issues"
+Documentation = "https://github.com/wlxinchat/qwen-image-edit-2509-api-server#readme"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+]
+
+[tool.setuptools]
+packages = ["app", "app.api", "app.core", "app.utils"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false

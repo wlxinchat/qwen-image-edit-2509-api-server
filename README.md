@@ -263,12 +263,28 @@ qwen-image-edit-2509-api-server/
 
 ## 📝 许可证
 
-本项目采用 MIT 许可证。
+本项目采用 MIT 许可证。详见 [LICENSE](LICENSE) 文件。
 
 ## 🤝 贡献
 
 欢迎提交Issue和Pull Request！
 
+贡献指南：
+1. Fork 本项目
+2. 创建您的特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交您的修改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 开启一个 Pull Request
+
+## 👤 作者
+
+**wlxinchat**
+
+- GitHub: [@wlxinchat](https://github.com/wlxinchat)
+- Email: wlxinchat@gmail.com
+
 ## 📮 联系方式
 
-如有问题，请提交Issue。
+如有问题或建议：
+- 提交 [Issue](https://github.com/wlxinchat/qwen-image-edit-2509-api-server/issues)
+- 发送邮件至: wlxinchat@gmail.com

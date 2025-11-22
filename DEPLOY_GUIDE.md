@@ -407,4 +407,9 @@ server {
 
 恭喜！你已经成功在AutoDL RTX 5090上部署了Qwen Image Edit API服务。
 
-如有问题，请查看日志文件或提交Issue。
+## 📮 获取帮助
+
+如有问题：
+- 查看日志文件：`/root/autodl-tmp/logs/api_server.log`
+- 提交 [Issue](https://github.com/wlxinchat/qwen-image-edit-2509-api-server/issues)
+- 发送邮件至：wlxinchat@gmail.com
