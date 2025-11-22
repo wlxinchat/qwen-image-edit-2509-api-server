@@ -24,7 +24,7 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 # Configuration
-MODEL_NAME=${MODEL_NAME:-"Qwen/Qwen-VL"}
+MODEL_NAME=${MODEL_NAME:-"Qwen/qwen-image-edit-2509"}
 MODELS_DIR=${MODELS_DIR:-"/root/autodl-tmp/models"}
 HF_TOKEN=${HF_TOKEN:-""}
 

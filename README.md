@@ -1,6 +1,6 @@
 # Qwen Image Edit 2509 API Server
 
-基于Qwen-VL模型的图片编辑API服务，专为AutoDL环境优化，特别解决了系统盘空间不足的问题。
+基于Qwen图片编辑模型(qwen-image-edit-2509)的API服务，专为AutoDL环境优化，特别解决了系统盘空间不足的问题。
 
 📖 **快速链接**: [快速开始](QUICKSTART.md) | [详细部署指南](DEPLOY_GUIDE.md) | [API文档](http://localhost:8000/docs)
 
@@ -136,7 +136,7 @@ server:
   port: 8000
 
 model:
-  name: "Qwen/Qwen-VL"
+  name: "Qwen/qwen-image-edit-2509"
   cache_dir: "/root/autodl-tmp/models"  # 数据盘路径
   device: "cuda"
   dtype: "bf16"  # 可选: fp32, fp16, bf16
@@ -161,7 +161,7 @@ HOST=0.0.0.0
 PORT=8000
 
 # 模型配置
-MODEL_NAME=Qwen/Qwen-VL
+MODEL_NAME=Qwen/qwen-image-edit-2509
 MODEL_CACHE_DIR=/root/autodl-tmp/models
 DEVICE=cuda
 DTYPE=bf16

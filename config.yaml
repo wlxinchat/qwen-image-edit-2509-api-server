@@ -10,7 +10,7 @@ server:
 
 # Model Settings
 model:
-  name: "Qwen/Qwen-VL"  # 根据实际模型名称调整
+  name: "Qwen/qwen-image-edit-2509"  # Qwen图片编辑模型
   # 模型缓存路径 - autodl环境建议设置为数据盘路径
   cache_dir: "/root/autodl-tmp/models"
   # 设备配置
