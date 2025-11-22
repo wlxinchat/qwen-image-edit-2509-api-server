@@ -315,12 +315,24 @@ download_model() {
     local model_name=$(grep "MODEL_NAME=" .env 2>/dev/null | cut -d= -f2 || echo "Qwen/Qwen-Image-Edit-2509")
     model_name=${model_name:-"Qwen/Qwen-Image-Edit-2509"}
 
-    # 简单检查：如果models目录有内容，询问是否跳过
-    if [ -d "$MODELS_DIR" ] && [ "$(ls -A $MODELS_DIR 2>/dev/null)" ]; then
-        print_warning "Model directory not empty: $MODELS_DIR"
-        print_info "Existing files found. Assuming model is already downloaded."
-        print_info "If you want to re-download, please delete $MODELS_DIR first."
-        return 0
+    # 智能检查：检查是否有完整的模型文件
+    local model_exists=false
+    if [ -d "$MODELS_DIR" ]; then
+        # 检查关键文件：config.json 和模型权重文件
+        local has_config=$(find "$MODELS_DIR" -name "config.json" -type f 2>/dev/null | head -1)
+        local has_model=$(find "$MODELS_DIR" \( -name "*.bin" -o -name "*.safetensors" \) -type f 2>/dev/null | head -1)
+
+        if [ -n "$has_config" ] && [ -n "$has_model" ]; then
+            model_exists=true
+            print_success "Model appears to be already downloaded in: $MODELS_DIR"
+            print_info "Found config.json and model files"
+            print_info "To force re-download, delete $MODELS_DIR"
+            return 0
+        elif [ "$(ls -A $MODELS_DIR 2>/dev/null)" ]; then
+            print_warning "Model directory has files but appears incomplete"
+            print_info "Cleaning up incomplete download and retrying..."
+            rm -rf "$MODELS_DIR"/*
+        fi
     fi
 
     print_info "Downloading model: $model_name"
