@@ -5,9 +5,16 @@
 
 set -e
 
+# Ensure we're in the project root directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$PROJECT_ROOT"
+
 echo "================================================"
 echo "Qwen Image Edit Model Downloader"
 echo "================================================"
+echo ""
+echo "Working directory: $PROJECT_ROOT"
 echo ""
 
 # Colors
@@ -52,7 +59,7 @@ fi
 echo -e "${YELLOW}Downloading model...${NC}"
 python3 << EOF
 import os
-from transformers import AutoModelForCausalLM, AutoProcessor
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # Set cache directories
 os.environ['HF_HOME'] = '$HF_HOME'
@@ -67,15 +74,15 @@ print(f"Downloading {model_name}...")
 print(f"Cache directory: {cache_dir}")
 
 try:
-    # Download processor
-    print("\nDownloading processor...")
-    processor = AutoProcessor.from_pretrained(
+    # Download tokenizer (Qwen uses AutoTokenizer instead of AutoProcessor)
+    print("\nDownloading tokenizer...")
+    tokenizer = AutoTokenizer.from_pretrained(
         model_name,
         cache_dir=cache_dir,
         trust_remote_code=True,
         token=token
     )
-    print("✓ Processor downloaded")
+    print("✓ Tokenizer downloaded")
 
     # Download model
     print("\nDownloading model...")

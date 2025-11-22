@@ -41,11 +41,11 @@ class QwenImageEditModel:
             logger.info(f"Dtype: {config.model.dtype}")
 
             # Import required libraries
-            from transformers import AutoModelForCausalLM, AutoProcessor
+            from transformers import AutoModelForCausalLM, AutoTokenizer
 
-            # Load processor
-            logger.info("Loading processor...")
-            self.processor = AutoProcessor.from_pretrained(
+            # Load tokenizer (Qwen models use AutoTokenizer instead of AutoProcessor)
+            logger.info("Loading tokenizer...")
+            self.processor = AutoTokenizer.from_pretrained(
                 config.model.name,
                 cache_dir=config.model.cache_dir,
                 trust_remote_code=True,

@@ -4,9 +4,16 @@
 
 set -e
 
+# Ensure we're in the project root directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$PROJECT_ROOT"
+
 echo "================================================"
 echo "Starting Qwen Image Edit API Server"
 echo "================================================"
+echo ""
+echo "Working directory: $PROJECT_ROOT"
 echo ""
 
 # Colors
