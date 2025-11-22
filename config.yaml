@@ -1,0 +1,71 @@
+# Qwen Image Edit 2509 API Server Configuration
+
+# Server Settings
+server:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 1
+  reload: false
+  log_level: "info"
+
+# Model Settings
+model:
+  name: "Qwen/Qwen-VL"  # 根据实际模型名称调整
+  # 模型缓存路径 - autodl环境建议设置为数据盘路径
+  cache_dir: "/root/autodl-tmp/models"
+  # 设备配置
+  device: "cuda"  # cuda 或 cpu
+  # 精度设置 - 可选: fp32, fp16, bf16
+  dtype: "bf16"
+  # 是否启用8bit量化以节省显存
+  load_in_8bit: false
+  # 是否启用4bit量化
+  load_in_4bit: false
+  # 最大批处理大小
+  max_batch_size: 1
+  # GPU内存限制 (GB) - 设置为None则不限制
+  max_memory: null
+
+# Image Processing
+image:
+  # 支持的图片格式
+  allowed_formats: ["jpg", "jpeg", "png", "webp"]
+  # 最大图片尺寸 (像素)
+  max_size: 2048
+  # 最大上传大小 (MB)
+  max_upload_size: 10
+  # 输出质量
+  output_quality: 95
+
+# API Settings
+api:
+  # API密钥认证 - 留空则不启用
+  api_key: ""
+  # 请求速率限制
+  rate_limit:
+    enabled: false
+    requests_per_minute: 60
+  # CORS设置
+  cors:
+    enabled: true
+    allow_origins: ["*"]
+    allow_methods: ["GET", "POST"]
+    allow_headers: ["*"]
+
+# Logging
+logging:
+  level: "INFO"
+  format: "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
+  # 日志文件路径 - autodl环境建议设置为数据盘
+  file: "/root/autodl-tmp/logs/api_server.log"
+  rotation: "500 MB"
+  retention: "10 days"
+
+# Performance
+performance:
+  # 编译模型以提升性能 (PyTorch 2.0+)
+  compile_model: false
+  # 使用xformers优化attention
+  use_xformers: false
+  # CPU线程数
+  num_threads: 4
